@@ -4,17 +4,17 @@ import { useParams } from 'react-router-dom';
 import { Message } from 'utils/message';
 import { fetchImgsInstance } from 'utils/themoviedbApi';
 
-const Cast = () => {
+const Reviews = () => {
   const { movieId } = useParams();
-  const [cast, setCast] = useState(null);
+  const [review, setReview] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data } = await fetchImgsInstance.getMovieCredits(movieId);
-        console.log('fetchData  data:', data.cast);
+        const { data } = await fetchImgsInstance.getMovieReviews(movieId);
+        console.log('fetchData  data:', data.results);
 
-        setCast(data.cast);
+        setReview(data.results);
       } catch (error) {
         Message.failure(error.message);
         Message.failure(
@@ -25,15 +25,17 @@ const Cast = () => {
 
     fetchData();
   }, [movieId]);
-
   return (
     <>
-      {cast && (
+      {(review &&
+      //   review.length === 0) ? (
+      //   <p>Нічого не знайдено</p>
+      // ) : (
         <ul>
-          {cast.map(({ id, name, character }) => (
+          {review.map(({ id, author, content }) => (
             <div key={id}>
-              <h5>{name}</h5>
-              <p>Character: {character}</p>
+              <h5>Author: {author}</h5>
+              <p>{content}</p>
             </div>
           ))}
         </ul>
@@ -42,4 +44,4 @@ const Cast = () => {
   );
 };
 
-export default Cast;
+export default Reviews;
