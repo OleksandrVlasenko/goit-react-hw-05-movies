@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import TrendingMovies from 'components/TrendingMovies/TrendingMovies';
 import { fetchImgsInstance } from 'utils/themoviedbApi';
-import { Message } from 'utils/message';
+import MoviesList from 'components/MoviesList/MoviesList';
+import NotFound from 'components/NotFound/NotFound';
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -15,10 +15,7 @@ const Home = () => {
         } = await fetchImgsInstance.getTrendingMovie();
         setTrendingMovies(results);
       } catch (error) {
-        Message.failure(error.message);
-        Message.failure(
-          'Щось пішло не так, спробуйте перезавантажити сторінку'
-        );
+        <NotFound error={error} />;
       }
     }
 
@@ -28,11 +25,7 @@ const Home = () => {
   return (
     <>
       <h1>Trending today</h1>
-      <ul>
-        {trendingMovies.map(({ title, id }) => (
-          <TrendingMovies key={id} title={title} id={id} />
-        ))}
-      </ul>
+      <MoviesList movies={trendingMovies} />
     </>
   );
 };

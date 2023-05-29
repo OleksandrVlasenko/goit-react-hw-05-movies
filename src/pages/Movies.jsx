@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import TrendingMovies from 'components/TrendingMovies/TrendingMovies';
 import { fetchImgsInstance } from 'utils/themoviedbApi';
 import { Message } from 'utils/message';
+import MoviesList from 'components/MoviesList/MoviesList';
+import SearchForm from 'components/SearchForm/SearchForm';
+import NotFound from 'components/NotFound/NotFound';
 
 const Movies = () => {
   const [incomingValue, setIncomingValue] = useState('');
   const [searchMovies, setSearchMovies] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('query') ?? '';
-  const queryRef = useRef(query);
+  const [searchParams] = useSearchParams();
+  const queryRef = useRef(searchParams.get('query') ?? '');
 
   useEffect(() => {
     setIncomingValue(queryRef.current);
@@ -28,56 +29,23 @@ const Movies = () => {
 
         if (results.length === 0) {
           Message.failure('По вашому запиту нічого не знайдено');
+          setSearchMovies([]);
           return;
         }
 
         setSearchMovies(results);
       } catch (error) {
-        Message.failure(error.message);
-        Message.failure(
-          'Щось пішло не так, спробуйте перезавантажити сторінку'
-        );
+        <NotFound error={error} />
       }
     }
 
     fetchData();
   }, [incomingValue]);
 
-  const updateQueryString = e => {
-    const query = e.target.value;
-    const nextParams = query !== '' ? { query } : {};
-    setSearchParams(nextParams);
-  };
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    let { value } = e.currentTarget.elements.movie;
-    if (value.trim() === '') {
-      Message.warning('Введіть назву фільму');
-      return;
-    }
-    setIncomingValue(value.toLowerCase());
-  }
-
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="movie"
-          autoFocus
-          placeholder="Search movies"
-          autoComplete="on"
-          value={query}
-          onChange={updateQueryString}
-        />
-        <button type="submit">Search</button>
-      </form>
-      <ul>
-        {searchMovies.map(({ title, id }) => (
-          <TrendingMovies key={id} title={title} id={id} />
-        ))}
-      </ul>
+      <SearchForm onSubmit={setIncomingValue} />
+      <MoviesList movies={searchMovies} />
     </>
   );
 };

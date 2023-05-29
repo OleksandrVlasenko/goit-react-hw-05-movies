@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Message } from 'utils/message';
+import { RenderReviews } from 'components/Reviews/RenderReviews';
 import { fetchImgsInstance } from 'utils/themoviedbApi';
+import NotFound from 'components/NotFound/NotFound';
 
 const Reviews = () => {
   const { movieId } = useParams();
@@ -12,36 +13,17 @@ const Reviews = () => {
     async function fetchData() {
       try {
         const { data } = await fetchImgsInstance.getMovieReviews(movieId);
-        console.log('fetchData  data:', data.results);
+        console.log('Review:', data.results);
 
         setReview(data.results);
       } catch (error) {
-        Message.failure(error.message);
-        Message.failure(
-          'Щось пішло не так, спробуйте перезавантажити сторінку'
-        );
+        <NotFound error={error} />;
       }
     }
 
     fetchData();
   }, [movieId]);
-  return (
-    <>
-      {(review &&
-      //   review.length === 0) ? (
-      //   <p>Нічого не знайдено</p>
-      // ) : (
-        <ul>
-          {review.map(({ id, author, content }) => (
-            <div key={id}>
-              <h5>Author: {author}</h5>
-              <p>{content}</p>
-            </div>
-          ))}
-        </ul>
-      )}
-    </>
-  );
+  return <>{review && <RenderReviews review={review} />}</>;
 };
 
 export default Reviews;

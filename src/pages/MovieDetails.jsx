@@ -1,24 +1,26 @@
-import { useEffect, useState } from 'react';
-import { Link, Outlet, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
-import { Message } from 'utils/message';
+import MovieCard from 'components/MovieCard/MovieCard';
+import AditionalInformation from 'components/AditionalInformation/AditionalInformation';
 import { fetchImgsInstance } from 'utils/themoviedbApi';
+import NotFound from 'components/NotFound/NotFound';
 
-const MovieDatails = () => {
+const MovieDetails = () => {
   const { movieId } = useParams();
   const [movie, setMovie] = useState(null);
+  const location = useLocation();
+  const backLinkHref = useRef(location.state?.from ?? '/');
 
   useEffect(() => {
     async function fetchData() {
       try {
         const { data } = await fetchImgsInstance.getMovieDetails(movieId);
+        console.log('Movie Detail:', data);
 
         setMovie(data);
       } catch (error) {
-        Message.failure(error.message);
-        Message.failure(
-          'Щось пішло не так, спробуйте перезавантажити сторінку'
-        );
+        <NotFound error={error} />;
       }
     }
 
@@ -27,34 +29,15 @@ const MovieDatails = () => {
 
   return (
     <>
+      <Link to={backLinkHref.current}>Go back</Link>
       {movie && (
         <>
-          <div>
-            <h2>{movie.title}</h2>
-            <p>User Score: {Math.round(movie.vote_average) * 10}%</p>
-            <h3>Overview</h3>
-            <p>{movie.overview}</p>
-            <h3>Genres</h3>
-            <div>
-              {Object.values(movie.genres).map(({ name }) => (
-                <span key={name}>{name}</span>
-              ))}
-            </div>
-          </div>
-          <h4>Aditional information</h4>
-          <ul>
-            <li>
-              <Link to="cast">Cast</Link>
-            </li>
-            <li>
-              <Link to="reviews">Review</Link>
-            </li>
-          </ul>
-          <Outlet />
+          <MovieCard movie={movie} />
+          <AditionalInformation />
         </>
       )}
     </>
   );
 };
 
-export default MovieDatails;
+export default MovieDetails;
