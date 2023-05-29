@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { fetchImgsInstance } from 'utils/themoviedbApi';
 import NotFound from '../NotFound/NotFound';
+import { RenderCast } from './RenderCast';
 
 const Cast = () => {
   const { movieId } = useParams();
@@ -12,9 +13,15 @@ const Cast = () => {
     async function fetchData() {
       try {
         const { data } = await fetchImgsInstance.getMovieCredits(movieId);
-        console.log('Cast:', data.cast);
 
-        setCast(data.cast);
+        const cast = data.cast.map(({ id, name, character, profile_path }) => ({
+          id,
+          name,
+          character,
+          profile_path,
+        }));
+
+        setCast(cast);
       } catch (error) {
         <NotFound error={error} />;
       }
@@ -23,20 +30,7 @@ const Cast = () => {
     fetchData();
   }, [movieId]);
 
-  return (
-    <>
-      {cast && (
-        <ul>
-          {cast.map(({ id, name, character }) => (
-            <div key={id}>
-              <h5>{name}</h5>
-              <p>Character: {character}</p>
-            </div>
-          ))}
-        </ul>
-      )}
-    </>
-  );
+  return <>{cast && <RenderCast cast={cast} />}</>;
 };
 
 export default Cast;

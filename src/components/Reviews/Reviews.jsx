@@ -13,9 +13,14 @@ const Reviews = () => {
     async function fetchData() {
       try {
         const { data } = await fetchImgsInstance.getMovieReviews(movieId);
-        console.log('Review:', data.results);
 
-        setReview(data.results);
+        const review = data.results.map(({ id, author, content }) => ({
+          id,
+          author,
+          content,
+        }));
+
+        setReview(review);
       } catch (error) {
         <NotFound error={error} />;
       }

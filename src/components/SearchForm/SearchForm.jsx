@@ -1,16 +1,19 @@
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { Message } from 'utils/message';
 
-
 const SearchForm = ({ onSubmit }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('query') ?? '';
+  const [query, setQuery] = useState('');
+  const [searchParams] = useSearchParams();
+  const queryRef = useRef(searchParams.get('query') ?? '');
 
-  const updateQueryString = e => {
-    const query = e.target.value;
-    const nextParams = query !== '' ? { query } : {};
-    setSearchParams(nextParams);
+  useEffect(() => {
+    setQuery(queryRef.current);
+  }, []);
+
+  const handleChange = e => {
+    setQuery(e.target.value);
   };
 
   function handleSubmit(e) {
@@ -31,7 +34,7 @@ const SearchForm = ({ onSubmit }) => {
         placeholder="Search movies"
         autoComplete="on"
         value={query}
-        onChange={updateQueryString}
+        onChange={handleChange}
       />
       <button type="submit">Search</button>
     </form>

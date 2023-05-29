@@ -13,7 +13,10 @@ const Home = () => {
         const {
           data: { results },
         } = await fetchImgsInstance.getTrendingMovie();
-        setTrendingMovies(results);
+        
+        const movies = results.map(({ title, id }) => ({ title, id }));
+
+        setTrendingMovies(movies);
       } catch (error) {
         <NotFound error={error} />;
       }

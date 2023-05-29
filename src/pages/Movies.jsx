@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { fetchImgsInstance } from 'utils/themoviedbApi';
@@ -8,24 +8,19 @@ import SearchForm from 'components/SearchForm/SearchForm';
 import NotFound from 'components/NotFound/NotFound';
 
 const Movies = () => {
-  const [incomingValue, setIncomingValue] = useState('');
   const [searchMovies, setSearchMovies] = useState([]);
-  const [searchParams] = useSearchParams();
-  const queryRef = useRef(searchParams.get('query') ?? '');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') ?? '';
 
   useEffect(() => {
-    setIncomingValue(queryRef.current);
-  }, []);
-
-  useEffect(() => {
-    if (incomingValue === '') {
+    if (query === '') {
       return;
     }
     async function fetchData() {
       try {
         const {
           data: { results },
-        } = await fetchImgsInstance.getSearchMovie(incomingValue);
+        } = await fetchImgsInstance.getSearchMovie(query);
 
         if (results.length === 0) {
           Message.failure('По вашому запиту нічого не знайдено');
@@ -33,18 +28,24 @@ const Movies = () => {
           return;
         }
 
-        setSearchMovies(results);
+        const movies = results.map(({ title, id }) => ({ title, id }));
+
+        setSearchMovies(movies);
       } catch (error) {
-        <NotFound error={error} />
+        <NotFound error={error} />;
       }
     }
 
     fetchData();
-  }, [incomingValue]);
+  }, [query]);
+
+  const updateQueryString = query => {
+    setSearchParams({ query });
+  };
 
   return (
     <>
-      <SearchForm onSubmit={setIncomingValue} />
+      <SearchForm onSubmit={updateQueryString} />
       <MoviesList movies={searchMovies} />
     </>
   );

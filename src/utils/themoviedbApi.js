@@ -41,6 +41,10 @@ class fetchImgs {
   async getMovieReviews(id) {
     return await axios.get(`/movie/${id}/reviews?page=1`, this.options);
   }
+
+  getImg(size, imgPath) {
+    return `https://image.tmdb.org/t/p/${size}${imgPath}`;
+  }
 }
 
 export const fetchImgsInstance = new fetchImgs();

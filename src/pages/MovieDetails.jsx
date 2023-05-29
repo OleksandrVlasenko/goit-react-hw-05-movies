@@ -15,10 +15,25 @@ const MovieDetails = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data } = await fetchImgsInstance.getMovieDetails(movieId);
-        console.log('Movie Detail:', data);
+        const {
+          data: {
+            title,
+            release_date,
+            vote_average,
+            overview,
+            genres,
+            poster_path,
+          },
+        } = await fetchImgsInstance.getMovieDetails(movieId);
 
-        setMovie(data);
+        setMovie({
+          title,
+          release_date,
+          vote_average,
+          overview,
+          genres,
+          poster_path,
+        });
       } catch (error) {
         <NotFound error={error} />;
       }
