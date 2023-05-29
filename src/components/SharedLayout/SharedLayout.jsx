@@ -3,22 +3,26 @@ import { Suspense } from 'react';
 
 import {
   Container,
+  Header,
   Nav,
   StyledLink,
+  Div,
 } from 'components/SharedLayout/SharedLayout.styled';
 
 const SharedLayout = () => {
   return (
     <Container>
-      <header>
+      <Header>
         <Nav>
           <StyledLink to="/">Home</StyledLink>
           <StyledLink to="/movies">Movies</StyledLink>
         </Nav>
-      </header>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Outlet />
-      </Suspense>
+      </Header>
+      <Div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Outlet />
+        </Suspense>
+      </Div>
     </Container>
   );
 };

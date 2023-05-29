@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import MovieCard from 'components/MovieCard/MovieCard';
 import AditionalInformation from 'components/AditionalInformation/AditionalInformation';
 import { fetchImgsInstance } from 'utils/themoviedbApi';
 import NotFound from 'components/NotFound/NotFound';
+import { GoBackBtn } from 'components/GoBackBtn/GoBackBtn';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
@@ -44,7 +45,7 @@ const MovieDetails = () => {
 
   return (
     <>
-      <Link to={backLinkHref.current}>Go back</Link>
+      <GoBackBtn link={backLinkHref.current} />
       {movie && (
         <>
           <MovieCard movie={movie} />

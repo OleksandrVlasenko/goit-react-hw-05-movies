@@ -9,7 +9,7 @@ export const RenderCast = ({ cast }) => {
       ) : (
         <ul>
           {cast.map(({ id, name, character, profile_path }) => (
-            <div key={id}>
+            <li key={id}>
               <img
                 src={
                   profile_path
@@ -21,7 +21,7 @@ export const RenderCast = ({ cast }) => {
               />
               <h5>{name}</h5>
               {character !== '' && <p>Character: {character}</p>}
-            </div>
+            </li>
           ))}
         </ul>
       )}

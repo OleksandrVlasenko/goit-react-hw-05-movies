@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import { Message } from 'utils/message';
+import { Form } from './SearchForm.styled';
 
 const SearchForm = ({ onSubmit }) => {
   const [query, setQuery] = useState('');
@@ -26,7 +28,7 @@ const SearchForm = ({ onSubmit }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit}>
       <input
         type="text"
         name="movie"
@@ -37,8 +39,12 @@ const SearchForm = ({ onSubmit }) => {
         onChange={handleChange}
       />
       <button type="submit">Search</button>
-    </form>
+    </Form>
   );
 };
 
 export default SearchForm;
+
+SearchForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+}

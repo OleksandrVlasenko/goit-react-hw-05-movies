@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export const RenderReviews = ({ review }) => {
   return (
     <>
@@ -15,4 +17,8 @@ export const RenderReviews = ({ review }) => {
       )}
     </>
   );
+};
+
+RenderReviews.propTypes = {
+  review: PropTypes.array.isRequired,
 };
